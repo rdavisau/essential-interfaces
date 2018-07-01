@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27825.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "essential-interfaces-generator", "essential-interfaces-generator\essential-interfaces-generator.csproj", "{054F6455-687D-4059-B025-5A41C2FA88C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "output", "output", "{1E421FB5-3798-4DE0-9B24-C445ED9E6EAA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Essential.Interfaces", "output\Essential.Interfaces\Essential.Interfaces.csproj", "{2BD08A33-EDFE-4C27-9835-CD477C3F54B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{054F6455-687D-4059-B025-5A41C2FA88C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{054F6455-687D-4059-B025-5A41C2FA88C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{054F6455-687D-4059-B025-5A41C2FA88C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{054F6455-687D-4059-B025-5A41C2FA88C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD08A33-EDFE-4C27-9835-CD477C3F54B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD08A33-EDFE-4C27-9835-CD477C3F54B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD08A33-EDFE-4C27-9835-CD477C3F54B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD08A33-EDFE-4C27-9835-CD477C3F54B4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2BD08A33-EDFE-4C27-9835-CD477C3F54B4} = {1E421FB5-3798-4DE0-9B24-C445ED9E6EAA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {666C5F37-CC00-4D26-83DE-F879EE2BB891}
+	EndGlobalSection
+EndGlobal

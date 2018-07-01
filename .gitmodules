@@ -1,0 +1,3 @@
+[submodule "submodule/Essentials"]
+	path = submodule/Essentials
+	url = https://github.com/xamarin/Essentials.git
