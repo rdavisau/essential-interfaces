@@ -40,7 +40,7 @@ namespace EssentialInterfaces.Tasks
                     })
                     .Where(a => a.Declarations.Any() || $"Ignoring {a.Api} which has no qualifying implementations".Dump() == null)
                     .ToList()
-                    .Dump();
+                    .Dump("Generated Models:");
 
         public IEnumerable<MemberDeclarationSyntax> GetQualifyingDeclarations(ClassDeclarationSyntax cls)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharpExtensions;
 
 namespace EssentialInterfaces.Helpers
@@ -31,7 +32,11 @@ namespace EssentialInterfaces.Helpers
 
         public static T Dump<T>(this T obj, string heading = null)
         {
-            Console.WriteLine(obj);
+            if (heading != null)
+                Console.WriteLine(heading);
+
+            Console.WriteLine(obj is string ? $"{obj}" : JsonConvert.SerializeObject(obj, Formatting.Indented));
+
             return obj;
         }
     }
