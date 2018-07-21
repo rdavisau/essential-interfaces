@@ -6,6 +6,8 @@ Eventually it will move to NuGet proper, but for now:
 
 `Install-Package Essential.Interfaces -Version 0.8.0-preview -Source https://www.myget.org/F/ei/api/v3/index.json`
 
+You can also grab the raw source outputs from [here](https://essential-interfaces.azurewebsites.net/) (see the end of this readme for a few more details). 
+
 Note that like Xamarin.Essentials itself, this is in preview. As simple as the output is, I haven't touched every member on every platform yet, so I can't hand-on-heart say that I've checked it all. 
 
 #### Why would I want this? 
@@ -42,10 +44,7 @@ Yes. The generated assembly is marked with the `LinkerSafe` attribute, making it
 Probably. The generator makes assumptions based on the current conventions in the repo. Since it is being run against each commit in the Xamarin.Essentials repo, any breaking changes should become clear quickly enough. 
 
 #### I just want to get the raw output!
-No problems, you totally can! The interfaces and implementations being generated off each commit to Xamarin.Essentials are also uploaded to [this bucket](https://rdavisau.blob.core.windows.net/essential-interfaces?restype=container&comp=list) (sorry, you have to read xml to access it from here). 
-
-You can download any file by appending the 'Name' property to this bucket url. For example: 
-https://rdavisau.blob.core.windows.net/essential-interfaces/essentials-0.8.0-preview-0-g26c14c7.cs.
+No problems, you totally can! The interfaces and implementations being generated off each commit to Xamarin.Essentials are available [here](https://essential-interfaces.azurewebsites.net/). That's a mono/WASM page so give it a few seconds to load. 
 
 The filename for each commit is generated based on the output of `git describe --tags --long` against the Essentials repo. Essentially - in addition to the SHA - it indicates the most recent tag in the repo and the distance (in commit count) that this commit is from that tag. For example, the latest at time of writing is `essentials-0.8.0-preview-4-g3dfa546.cs`. This means the file was generated off the Essentials commit SHA `3dfa546`, which is `4` commits after the `0.8.0-preview` tag. 
 
