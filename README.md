@@ -4,7 +4,7 @@ Generates interfaces for the [Xamarin.Essentials](https://github.com/xamarin/Ess
 If you're after the interfaces themselves, they're currently [published to MyGet](https://www.myget.org/feed/ei/package/nuget/Essential.Interfaces) - while I make sure it's all hunky dory. 
 Eventually it will move to NuGet proper, but for now: 
 
-`Install-Package Essential.Interfaces -Version 0.8.0-preview -Source https://www.myget.org/F/ei/api/v3/index.json`
+`Install-Package Essential.Interfaces -Version 0.11.0-preview -Source https://www.myget.org/F/ei/api/v3/index.json`
 
 You can also grab the raw source outputs from [here](https://essential-interfaces.azurewebsites.net/) (see the end of this readme for a few more details). 
 
