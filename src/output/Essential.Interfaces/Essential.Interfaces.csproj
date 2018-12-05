@@ -9,6 +9,13 @@
     <LangVersion>latest</LangVersion>
     <Version>0.0.0</Version>
     <PackageReleaseNotes />
+    <PackageId>Xamarin.Essentials.Interfaces</PackageId>
+    <Product>Xamarin.Essentials.Interfaces</Product>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/rdavisau/essential-interfaces/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/rdavisau/essential-interfaces</PackageProjectUrl>
+    <Copyright>2018 Ryan Davis</Copyright>
+    <RepositoryUrl>https://github.com/rdavisau/essential-interfaces</RepositoryUrl>
+    <PackageTags>xamarin, Xamarin.Essentials, interfaces</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
