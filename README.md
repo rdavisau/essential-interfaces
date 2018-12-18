@@ -16,17 +16,23 @@ The Xamarin.Essentials library is a great initiative by the Xamarin team to prov
 essential-interface-generator reads the Xamarin.Essentials source and generates an intermediate model representing the apis exposed by Xamarin.Essentials (`RoslynModelGenerator`). It then uses that model to generate C# code containing matching interface definitions for the apis, and implementations for interfaces that forward members on to the static classes provided by Xamarin Essentials (`ImplementationGenerator`). These are dropped into an output project with some basic version information (`ProjectMutator`) and packed for NuGet.
 
 #### How do I use the interfaces?
-Install the NuGet package and get registering! You can register all implementatations at once by checking for types implementing `IEssentialsImplementation`*, or just register the ones you care about.
+Install the NuGet package and get registering! Each Xamarin.Essentials api has a matching interface and implementation in the `Xamarin.Essentials.Interfaces` and `Xamarin.Essentials.Implementation` namespaces respectively. These follow a basic pattern:
 
-For example:
+*Xamarin.Essentials API*: `Thing`
+*Interface*: `IThing`
+*Implementation*: `ThingImplementation`
+
+Knowing this, you can register each implementation you need with its matching interface. For example:
 
 ```cs 
-builder
-    .RegisterAssemblyTypes(typeof(IEssentialsImplementation).Assembly)
-    .Where(x => x.Implements<IEssentialsImplementation>())
-    .AsImplementedInterfaces();
+using Xamarin.Essentials.Implementation;
+using Xamarin.Essentials.Interfaces;
+
+builder.Register<IAccelerometer, AccelerometerImplementation>();
+builder.Register<IBattery, BatteryImplementation>();
 ```
-*`IEssentialsImplementation` is an empty 'marker' interface attached to all implementation classes.
+
+Alternatively, you can use the marker interface `IEssentialsImplementation` (adopted by all implementation classes) and reflection to find and register all implementation classes at once. When using this approach, you may need to hint the linker to preserve the implementations (since they are never directly referenced). The technique typically used for this purpose is [falseflagging](https://docs.microsoft.com/en-us/xamarin/android/deploy-test/linker#falseflag).
 
 For mocking, just work as you would with any other mocks:
 ```cs 
