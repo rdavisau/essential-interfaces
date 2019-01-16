@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Ryan Davis</Authors>
     <Company />
-    <Description>Interfaces for the cross platform APIs exposed by Xamarin.Essentials. Suitable for mocking and for applications using dependency injection.</Description>
+    <Description>Unofficial automatically-generated interfaces for the cross platform APIs exposed by Xamarin.Essentials. Suitable for mocking and for applications using dependency injection.</Description>
     <LangVersion>latest</LangVersion>
     <Version>0.0.0</Version>
     <PackageReleaseNotes />
