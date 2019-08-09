@@ -16,7 +16,7 @@ namespace EssentialInterfaces.Tasks
         private const string BaseImplementationInterface = "IEssentialsImplementation";
 
         private readonly List<string> _usings
-            = new[] { "System", "System.Collections.Generic", "System.IO", "System.Threading", "System.Threading.Tasks", InterfacesNamespace }.ToList();
+            = new[] { "System", "System.Collections.Generic", "System.IO", "System.Threading", "System.Threading.Tasks", "Essential.Interfaces", InterfacesNamespace }.ToList();
             
         public string Generate(GeneratorContext context, List<ApiModel> models)
         {
@@ -50,13 +50,15 @@ namespace EssentialInterfaces.Tasks
 
         public string GetCombinedImplementationCode(List<ApiModel> models)
             => $"public class {ImplementationClass} : {BaseImplementationInterface}, {String.Join(", ", models.Select(i => i.Interface))} {{ {Environment.NewLine}{Environment.NewLine}" +
-               String.Join($"{Environment.NewLine}{Environment.NewLine}", models.SelectMany(x => x.Declarations, GetForwardedImplementation)).Indent() + Environment.NewLine +
+               $"[Preserve(Conditional=true)]{Environment.NewLine}public {ImplementationClass}() {{}}{Environment.NewLine}{Environment.NewLine}".Indent() +
+               String.Join($"{Environment.NewLine}{Environment.NewLine}", models.SelectMany(x => x.Declarations, GetForwardedImplementation)) + Environment.NewLine +
                $"}}";
 
         public string GetSingleApiImplementationCode(ApiModel m)
         {
             return $"public class {m.Api}Implementation : {BaseImplementationInterface}, {m.Interface} {{ {Environment.NewLine}{Environment.NewLine}" +
-                   String.Join($"{Environment.NewLine}{Environment.NewLine}", m.Declarations.Select(d => GetForwardedImplementation(m, d))).Indent() + Environment.NewLine +
+                   $"[Preserve(Conditional=true)]{Environment.NewLine}public {m.Api}Implementation() {{}}{Environment.NewLine}{Environment.NewLine}".Indent() +
+                   String.Join($"{Environment.NewLine}{Environment.NewLine}", m.Declarations.Select(d => GetForwardedImplementation(m, d))) + Environment.NewLine +
                    $"}}";
         }
 
