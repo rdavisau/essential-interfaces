@@ -72,8 +72,8 @@ namespace EssentialInterfaces.Tasks
                     return new ApiMemberModel
                     {
                         Kind = MemberKind.Method,
+                        Identifier = $"{m.Identifier}{m.GetRequiredGenericTypeArgumentsIfAny()}",
                         ReturnType = $"{m.ReturnType}",
-                        Identifier = $"{m.Identifier}",
                         ArgsString = $"{m.ParameterList.ToFullString().Trim()}"
                     };
 

@@ -26,6 +26,21 @@ namespace EssentialInterfaces.Helpers
             => p.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.SetAccessorDeclaration)
                                                   && !x.Modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword))) ?? false;
 
+        public static string GetRequiredGenericTypeArgumentsIfAny(this MethodDeclarationSyntax m)
+        {
+            // can't immediately see a way to do this properly 
+            // this covers current Xamarin.Essentials generic arguments 
+            // don't judge me
+            var returnType = $"{m.ReturnType}";
+            var appearsToRequireAGenericTypeArgumentOfT =
+                returnType == "T"
+                || returnType.Contains("<T>");
+
+            return appearsToRequireAGenericTypeArgumentOfT
+                ? "<T>"
+                : "";
+        }
+                
         public static string Indent(this string s)
             => String.Join(Environment.NewLine,
                 s.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Select(str => $"\t{str}"));
