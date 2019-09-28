@@ -29,10 +29,11 @@ namespace EssentialInterfaces.Tasks
             var xDoc = XDocument.Load(csprojPath);
 
             var nupkgVersion = GetNupkgVersion(essentialsPackageVersion);
+            var releaseNotes = GetReleaseNotes(commitSha);
 
             SetEssentialsDependencyVersion(xDoc, essentialsPackageVersion);
-            SetPropertyGroupValue(xDoc, "PackageReleaseNotes", $"Generated from Xamarin.Essentials commit {commitSha}");
             SetPropertyGroupValue(xDoc, "Version", nupkgVersion);
+            SetPropertyGroupValue(xDoc, "PackageReleaseNotes", releaseNotes);
 
             xDoc.Save(csprojPath);
         }
@@ -41,6 +42,17 @@ namespace EssentialInterfaces.Tasks
             !String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION"))
             ? Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION")
             : essentialsPackageVersion;
+
+        private string GetReleaseNotes(string commitSha)
+        {
+            var additionalReleaseNotes = Environment.GetEnvironmentVariable("ADDITIONAL_RELEASENOTES");
+            var releaseNotes = $"Generated from Xamarin.Essentials commit {commitSha}";
+            
+            if (!String.IsNullOrWhiteSpace(additionalReleaseNotes))
+                releaseNotes += Environment.NewLine + Environment.NewLine + additionalReleaseNotes;
+            
+            return releaseNotes;
+        }
 
         private void SetEssentialsDependencyVersion(XDocument doc, string version)
         {
