@@ -1,4 +1,6 @@
 ﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using EssentialInterfaces.Models;
@@ -26,12 +28,19 @@ namespace EssentialInterfaces.Tasks
             var csprojPath = Path.Combine(interfacesProjPath, "Essential.Interfaces.csproj");
             var xDoc = XDocument.Load(csprojPath);
 
+            var nupkgVersion = GetNupkgVersion(essentialsPackageVersion);
+
             SetEssentialsDependencyVersion(xDoc, essentialsPackageVersion);
-            SetPropertyGroupValue(xDoc, "Version", essentialsPackageVersion);
             SetPropertyGroupValue(xDoc, "PackageReleaseNotes", $"Generated from Xamarin.Essentials commit {commitSha}");
+            SetPropertyGroupValue(xDoc, "Version", nupkgVersion);
 
             xDoc.Save(csprojPath);
         }
+
+        private string GetNupkgVersion(string essentialsPackageVersion) =>
+            !String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION"))
+            ? Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION")
+            : essentialsPackageVersion;
 
         private void SetEssentialsDependencyVersion(XDocument doc, string version)
         {
