@@ -12,7 +12,7 @@ namespace EssentialInterfaces.Tasks
 {
     public class RoslynModelGenerator
     {
-        private readonly List<string> _masks = new[] { ".netstandard", ".shared" }.ToList();
+        private readonly List<string> _masks = new[] { ".netstandard.cs", ".shared.cs" }.ToList();
 
         public List<ApiModel> Generate(GeneratorContext context)
             =>
@@ -20,10 +20,12 @@ namespace EssentialInterfaces.Tasks
                     .GetFiles(context.XamarinEssentialsImplementationsPath, "*.cs", SearchOption.AllDirectories)
                     .Where(f => _masks.Any(f.Contains))
                     .GroupBy(Path.GetDirectoryName, File.ReadAllText)
+                    .Where(f => _masks.Any(f.EndsWith))
+                    .GroupBy(Path.GetDirectoryName, f => (f, contents: File.ReadAllText(f)))
                     .Select(a =>
                     {
                         var api = Path.GetFileName(a.Key);
-                        var tree = CSharpSyntaxTree.ParseText(String.Join(Environment.NewLine, a));
+                        var tree = CSharpSyntaxTree.ParseText(String.Join(Environment.NewLine, a.Select(f => f.contents)));
                         var ns = $"{tree.GetDeclarations<NamespaceDeclarationSyntax>().FirstOrDefault()?.Name.ToString()}";
 
                         return new ApiModel
