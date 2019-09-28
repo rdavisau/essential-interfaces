@@ -18,8 +18,6 @@ namespace EssentialInterfaces.Tasks
             =>
                 Directory
                     .GetFiles(context.XamarinEssentialsImplementationsPath, "*.cs", SearchOption.AllDirectories)
-                    .Where(f => _masks.Any(f.Contains))
-                    .GroupBy(Path.GetDirectoryName, File.ReadAllText)
                     .Where(f => _masks.Any(f.EndsWith))
                     .GroupBy(Path.GetDirectoryName, f => (f, contents: File.ReadAllText(f)))
                     .Select(a =>
@@ -37,6 +35,7 @@ namespace EssentialInterfaces.Tasks
                                     .Where(x => x.Identifier.Text == api)
                                     .SelectMany(GetQualifyingDeclarations)
                                     .Select(GetModelForDeclaration)
+                                    .Where(m => m != null)
                                     .ToList()
                         };
                     })
@@ -59,8 +58,11 @@ namespace EssentialInterfaces.Tasks
                                 && m.Modifiers.Contains(SyntaxKind.StaticKeyword));
 
             var events =
-                cls.GetDeclarations<EventDeclarationSyntax>()
-                    .Where(m => m.Modifiers.Contains(SyntaxKind.StaticKeyword));
+                Enumerable.Concat<MemberDeclarationSyntax>
+                    (
+                        cls.GetDeclarations<EventDeclarationSyntax>().Where(m => m.Modifiers.Contains(SyntaxKind.StaticKeyword)),
+                        cls.GetDeclarations<EventFieldDeclarationSyntax>()
+                    );
 
             return Enumerable.Concat<MemberDeclarationSyntax>(methods, properties).Concat(events);
         }
@@ -87,6 +89,20 @@ namespace EssentialInterfaces.Tasks
                         ReturnType = $"{evt.Type}"
                     };
 
+                case EventFieldDeclarationSyntax evt 
+                    when !$"{evt.GetIdentifier()}".EndsWith("Internal"):
+                    return new ApiMemberModel
+                    {
+                        Kind = MemberKind.Event,
+                        Identifier = $"{evt.GetIdentifier()}",
+                        ReturnType = $"{evt.Declaration.Type}"
+                    };
+
+                // we don't want to exposed internal event handlers
+                case EventFieldDeclarationSyntax evt
+                    when $"{evt.GetIdentifier()}".EndsWith("Internal"):
+                    return null;
+
                 case PropertyDeclarationSyntax p
                     when p.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.SetAccessorDeclaration) && !x.Modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword))) ?? false:
                     return new ApiMemberModel
@@ -105,7 +121,7 @@ namespace EssentialInterfaces.Tasks
                     };
 
                 default:
-                    throw new NotImplementedException($"Don't know how to generate model from {typeof(T)}");
+                    throw new NotImplementedException($"Don't know how to generate model from {syntaxNode.GetType()}");
             }
         }
     }

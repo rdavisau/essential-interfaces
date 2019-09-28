@@ -40,7 +40,10 @@ namespace EssentialInterfaces.Helpers
                 ? "<T>"
                 : "";
         }
-                
+
+        public static SyntaxToken GetIdentifier(this EventFieldDeclarationSyntax evt)
+            => evt.Declaration.Variables[0].Identifier;
+        
         public static string Indent(this string s)
             => String.Join(Environment.NewLine,
                 s.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Select(str => $"\t{str}"));
