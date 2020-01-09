@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using EssentialInterfaces.Helpers;
@@ -72,11 +73,23 @@ namespace EssentialInterfaces.Tasks
         {
             switch (syntaxNode)
             {
+                case MethodDeclarationSyntax m when m.TypeParameterList?.Parameters.Any() ?? false:
+                    return new ApiMemberModel
+                    {
+                        Kind = MemberKind.Method,
+                        Identifier = $"{m.Identifier}",
+                        TypeParameters = $"{m.TypeParameterList}",
+                        TypeConstraints = $"{m.ConstraintClauses}",
+                        ReturnType = $"{m.ReturnType}",
+                        ArgsString = $"{m.ParameterList.ToFullString().Trim()}"
+                    };
+                
                 case MethodDeclarationSyntax m:
                     return new ApiMemberModel
                     {
                         Kind = MemberKind.Method,
-                        Identifier = $"{m.Identifier}{m.GetRequiredGenericTypeArgumentsIfAny()}",
+                        Identifier = $"{m.Identifier}",
+                        TypeParameters = $"{m.TypeParameterList}",
                         ReturnType = $"{m.ReturnType}",
                         ArgsString = $"{m.ParameterList.ToFullString().Trim()}"
                     };

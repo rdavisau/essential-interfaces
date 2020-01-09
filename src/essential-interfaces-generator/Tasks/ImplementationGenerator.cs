@@ -66,8 +66,11 @@ namespace EssentialInterfaces.Tasks
         {
             switch (model.Kind)
             {
+                case MemberKind.Method when model.HasTypeConstraintClauses():
+                    return $"{model.ReturnType} {model.Identifier}{model.TypeParameters}{model.ArgsString} {model.TypeConstraints};";
+                
                 case MemberKind.Method:
-                    return $"{model.ReturnType} {model.Identifier}{model.ArgsString};";
+                    return $"{model.ReturnType} {model.Identifier}{model.TypeParameters}{model.ArgsString};";
 
                 case MemberKind.Event:
                     return $"event {model.ReturnType} {model.Identifier};";
@@ -88,8 +91,8 @@ namespace EssentialInterfaces.Tasks
             switch (d.Kind)
             {
                 case MemberKind.Method:
-                    return $"{d.ReturnType} {m.Interface}.{d.Identifier}{d.ArgsString}{Environment.NewLine}" +
-                           $"\t => {m.Namespace}.{m.Api}.{d.Identifier}({d.ArgsArgs});";
+                    return $"{d.ReturnType} {m.Interface}.{d.Identifier}{d.TypeParameters}{d.ArgsString}{Environment.NewLine}" +
+                           $"\t => {m.Namespace}.{m.Api}.{d.Identifier}{d.TypeParameters}({d.ArgsArgs});";
 
                 case MemberKind.Event:
                     return $"event {d.ReturnType} {m.Interface}.{d.Identifier}{Environment.NewLine}{{{Environment.NewLine}" +

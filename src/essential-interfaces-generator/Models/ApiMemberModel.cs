@@ -11,6 +11,8 @@ namespace EssentialInterfaces.Models
         public MemberKind Kind { get; set; }
         public string ReturnType { get; set; }
         public string Identifier { get; set; }
+        public string TypeParameters { get; set; }
+        public string TypeConstraints { get; set; }
         public string ArgsString { get; set; }
         internal string ArgsArgs => // hehe xd pls dont @ me
             String.Join(", ",

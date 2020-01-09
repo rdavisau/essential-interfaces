@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EssentialInterfaces.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,13 +12,21 @@ namespace EssentialInterfaces.Helpers
 {
     public static class Ext
     {
-        public static List<T> GetDeclarations<T>(this SyntaxTree tree)
+        public static List<T> GetDeclarations<T>(this SyntaxTree tree, bool nest = false)
             where T : SyntaxNode
-            => new DeclarationSyntaxWalker<T>().Visit(tree);
+            => new DeclarationSyntaxWalker<T>
+            {
+                Descend = nest
+            }
+            .Visit(tree);
 
-        public static List<T> GetDeclarations<T>(this SyntaxNode tree)
+        public static List<T> GetDeclarations<T>(this SyntaxNode tree, bool nest = false)
             where T : SyntaxNode
-            => new DeclarationSyntaxWalker<T>().VisitNode(tree);
+            => new DeclarationSyntaxWalker<T>
+                {
+                    Descend = nest
+                }
+                .VisitNode(tree);
 
         public static bool Contains(this SyntaxTokenList list, SyntaxKind modifier)
             => list.Any(x => CSharpExtensions.IsKind((SyntaxToken) x, modifier));
@@ -26,20 +35,8 @@ namespace EssentialInterfaces.Helpers
             => p.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.SetAccessorDeclaration)
                                                   && !x.Modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword))) ?? false;
 
-        public static string GetRequiredGenericTypeArgumentsIfAny(this MethodDeclarationSyntax m)
-        {
-            // can't immediately see a way to do this properly 
-            // this covers current Xamarin.Essentials generic arguments 
-            // don't judge me
-            var returnType = $"{m.ReturnType}";
-            var appearsToRequireAGenericTypeArgumentOfT =
-                returnType == "T"
-                || returnType.Contains("<T>");
-
-            return appearsToRequireAGenericTypeArgumentOfT
-                ? "<T>"
-                : "";
-        }
+        public static bool HasTypeConstraintClauses(this ApiMemberModel m)
+            => !String.IsNullOrWhiteSpace(m.TypeConstraints);
 
         public static SyntaxToken GetIdentifier(this EventFieldDeclarationSyntax evt)
             => evt.Declaration.Variables[0].Identifier;

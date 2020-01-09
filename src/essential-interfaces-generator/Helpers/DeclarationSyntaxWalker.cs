@@ -6,12 +6,18 @@ namespace EssentialInterfaces.Helpers
     public class DeclarationSyntaxWalker<T> : SyntaxWalker
         where T : SyntaxNode
     {
+        public bool Descend { get; set; }
         public List<T> Members { get; private set; } = new List<T>();
 
         public override void Visit(SyntaxNode node)
         {
             if (node is T)
+            {
                 Members.Add(node as T);
+                
+                if (Descend)
+                    base.Visit(node);
+            }
             else
                 base.Visit(node);
         }
