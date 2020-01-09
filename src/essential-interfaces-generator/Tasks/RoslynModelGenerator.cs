@@ -27,7 +27,7 @@ namespace EssentialInterfaces.Tasks
                         var tree = CSharpSyntaxTree.ParseText(String.Join(Environment.NewLine, a.Select(f => f.contents)));
                         var ns = $"{tree.GetDeclarations<NamespaceDeclarationSyntax>().FirstOrDefault()?.Name.ToString()}";
 
-                        return new ApiModel
+                        var apiModel = new ApiModel
                         {
                             Namespace = ns,
                             Api = api,
@@ -37,8 +37,18 @@ namespace EssentialInterfaces.Tasks
                                     .SelectMany(GetQualifyingDeclarations)
                                     .Select(GetModelForDeclaration)
                                     .Where(m => m != null)
+                                    .ToList(),
+                            OtherTypes = 
+                                tree.GetDeclarations<ClassDeclarationSyntax>(true)
+                                    .Where(x => x.Identifier.Text != api)
+                                    .Select(x => $"{x.Identifier.Text}")
                                     .ToList()
                         };
+
+                        foreach (var declarationWithConstraint in apiModel.Declarations.Where(x => x.HasTypeConstraintClauses()))
+                            QualifyNestedTypeConstraintIfNecessary(declarationWithConstraint, apiModel);
+
+                        return apiModel;
                     })
                     .Where(a => a.Declarations.Any() || $"Ignoring {a.Api} which has no qualifying implementations".Dump() == null)
                     .ToList()
@@ -136,6 +146,34 @@ namespace EssentialInterfaces.Tasks
                 default:
                     throw new NotImplementedException($"Don't know how to generate model from {syntaxNode.GetType()}");
             }
+        }
+
+        // some type constraints against member methods (so far, just permissions ones) refer to types nested within the api
+        // this is difficult to detect using a non-semantic model, so compare all nested types with the type constraint to 
+        // detect any matches.
+        // since this could result in unexpected things in the future, let's throw for anything we don't expect
+        private readonly string[] _expectedNestedTypeConstraintApis = { "Permissions" };
+        private readonly string[] _ignoreNestedTypeConstraintApis = { };
+        private void QualifyNestedTypeConstraintIfNecessary(ApiMemberModel declarationWithConstraint, ApiModel api)
+        {
+            var matchingInternalType =
+                api.OtherTypes
+                    .FirstOrDefault(x => declarationWithConstraint.TypeConstraints.Contains(x));
+
+            if (matchingInternalType is null || _ignoreNestedTypeConstraintApis.Contains(api.Api))
+                return;
+
+            if (!_expectedNestedTypeConstraintApis.Contains(api.Api))
+                throw new Exception(
+                    $"Found a potentially nested type in member '{declarationWithConstraint.Identifier}', " +
+                    $"but the containing api '{api.Api}' was not listed in {nameof(_expectedNestedTypeConstraintApis)} or {nameof(_ignoreNestedTypeConstraintApis)}");
+
+            $"Replacing '{matchingInternalType}' found in type constraint for member '{api.Api}.{declarationWithConstraint.Identifier}' with fully qualified nested name."
+                .Dump();
+
+            declarationWithConstraint.TypeConstraints =
+                declarationWithConstraint.TypeConstraints.Replace(matchingInternalType,
+                    $"{api.Namespace}.{api.Api}.{matchingInternalType}");
         }
     }
 }

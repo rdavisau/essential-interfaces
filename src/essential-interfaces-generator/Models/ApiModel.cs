@@ -8,5 +8,6 @@ namespace EssentialInterfaces.Models
         public string Api { get; set; }
         public string Interface => $"I{Api}";
         public List<ApiMemberModel> Declarations { get; set; } = new List<ApiMemberModel>();
+        public List<string> OtherTypes { get; set; }
     }
 }
