@@ -3,6 +3,7 @@
 using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using EssentialInterfaces.Helpers;
 using EssentialInterfaces.Models;
 
 namespace EssentialInterfaces.Tasks
@@ -28,24 +29,30 @@ namespace EssentialInterfaces.Tasks
             var csprojPath = Path.Combine(interfacesProjPath, "Essential.Interfaces.csproj");
             var xDoc = XDocument.Load(csprojPath);
 
+            var dependencyVersion = GetDependencyVersion(essentialsPackageVersion);
             var nupkgVersion = GetNupkgVersion(essentialsPackageVersion);
             var releaseNotes = GetReleaseNotes(commitSha);
 
-            SetEssentialsDependencyVersion(xDoc, essentialsPackageVersion);
+            SetEssentialsDependencyVersion(xDoc, dependencyVersion);
             SetPropertyGroupValue(xDoc, "Version", nupkgVersion);
             SetPropertyGroupValue(xDoc, "PackageReleaseNotes", releaseNotes);
 
             xDoc.Save(csprojPath);
         }
 
+        private string GetDependencyVersion(string essentialsPackageVersion) =>
+            !String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(KnownEnvironmentVariable.FORCE_DEPENDENCY_VERSION))
+                ? Environment.GetEnvironmentVariable(KnownEnvironmentVariable.FORCE_DEPENDENCY_VERSION)
+                : essentialsPackageVersion;
+
         private string GetNupkgVersion(string essentialsPackageVersion) =>
-            !String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION"))
-            ? Environment.GetEnvironmentVariable("FORCE_NUPKG_VERSION")
+            !String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(KnownEnvironmentVariable.FORCE_NUPKG_VERSION))
+            ? Environment.GetEnvironmentVariable(KnownEnvironmentVariable.FORCE_NUPKG_VERSION)
             : essentialsPackageVersion;
 
         private string GetReleaseNotes(string commitSha)
         {
-            var additionalReleaseNotes = Environment.GetEnvironmentVariable("ADDITIONAL_RELEASENOTES");
+            var additionalReleaseNotes = Environment.GetEnvironmentVariable(KnownEnvironmentVariable.ADDITIONAL_RELEASENOTES);
             var releaseNotes = $"Generated from Xamarin.Essentials commit {commitSha}";
             
             if (!String.IsNullOrWhiteSpace(additionalReleaseNotes))
