@@ -1,6 +1,12 @@
 # essential-interfaces-generator
 Generates interfaces for the [Xamarin.Essentials](https://github.com/xamarin/Essentials) library. 
 
+📝️ **For .NET MAUI Users**: the base MAUI library includes the originally-separate Essentials APIs, and they come with interfaces out of the box - hurrah!
+So you don't need to use this any more. If you install a recent version of Xamarin.Essentials.Interfaces into a MAUI app, you'll get 'compatibility interfaces'. 
+These match the 'shape' of Xamarin.Essentials interfaces, but also implement and delegate to the MAUI interfaces and implementations, 
+[which have been moved into various different namespaces](https://github.com/dotnet/maui/pull/5562). This gives you the option of deferring the namespace changes,
+or (with the help of a few global usings) keeping your code compatible with both XF and MAUI for the time being.
+
 If you're after the interfaces themselves, you can install them from [NuGet](https://www.nuget.org/packages/Xamarin.Essentials.Interfaces): 
 
 `

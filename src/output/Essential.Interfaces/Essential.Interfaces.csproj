@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0;net6.0-ios;net6.0-android</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Ryan Davis</Authors>
     <Company />
@@ -13,13 +13,22 @@
     <Product>Xamarin.Essentials.Interfaces</Product>
     <PackageLicenseUrl>https://raw.githubusercontent.com/rdavisau/essential-interfaces/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/rdavisau/essential-interfaces</PackageProjectUrl>
-    <Copyright>2018 Ryan Davis</Copyright>
+    <Copyright>2022 Ryan Davis</Copyright>
     <RepositoryUrl>https://github.com/rdavisau/essential-interfaces</RepositoryUrl>
-    <PackageTags>xamarin, Xamarin.Essentials, interfaces</PackageTags>
+    <PackageTags>xamarin, Xamarin.Essentials, interfaces, maui, Maui.Essentials</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0-ios' Or '$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net6.0'">
+    <UseMaui>true</UseMaui>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-ios' Or '$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net6.0'">
+    <Compile Remove="Essentials.cs"/>
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Xamarin.Essentials" Version="0.0.0" />
+    <Compile Remove="Maui/MauiEssentials.cs"/>
   </ItemGroup>
 
 </Project>
