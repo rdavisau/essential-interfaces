@@ -620,11 +620,19 @@ namespace Xamarin.Essentials.Implementation
         public Task OpenAsync(Placemark placemark, MapLaunchOptions options) =>
             _mapImplementation.OpenAsync(placemark, options);
 
-        public Task<bool> TryOpenAsync(double latitude, double longitude, MapLaunchOptions options)
-            => _mapImplementation.TryOpenAsync(latitude, longitude, options);
+        // shrug
+        public async Task<bool> TryOpenAsync(double latitude, double longitude, MapLaunchOptions options)
+        {
+            try { await _mapImplementation.OpenAsync(latitude, longitude, options); return true; }
+            catch { return false; }
+        }
 
-        public Task<bool> TryOpenAsync(Placemark placemark, MapLaunchOptions options)
-            => _mapImplementation.TryOpenAsync(placemark, options);
+        // shrug
+        public async Task<bool> TryOpenAsync(Placemark placemark, MapLaunchOptions options)
+        {
+            try { await _mapImplementation.OpenAsync(placemark, options); return true; }
+            catch { return false; }
+        }
     }
 
     public class MediaPickerImplementation : Xamarin.Essentials.Interfaces.IMediaPicker, Microsoft.Maui.Media.IMediaPicker, IEssentialsImplementation

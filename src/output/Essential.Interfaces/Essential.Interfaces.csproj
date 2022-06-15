@@ -22,13 +22,19 @@
     <UseMaui>true</UseMaui>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-ios' Or '$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net6.0'">
-    <Compile Remove="Essentials.cs"/>
-  </ItemGroup>
-  
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Xamarin.Essentials" Version="0.0.0" />
     <Compile Remove="Maui/MauiEssentials.cs"/>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-ios' Or '$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net6.0'">
+    <Compile Remove="Essentials.cs"/>
+    <PackageReference Include="Microsoft.Maui.Dependencies" Version="$(MauiVersion)">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Maui.Extensions" Version="$(MauiVersion)">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
